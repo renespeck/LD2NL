@@ -19,9 +19,13 @@
  */
 package org.aksw.owl2nl;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.aksw.owl2nl.exception.OWLAxiomConversionException;
+import org.apache.jena.ext.xerces.xs.StringList;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.ToStringRenderer;
 import org.semanticweb.owlapi.model.*;
@@ -180,13 +184,26 @@ public class OWLAxiomConverter implements OWLAxiomVisitor{
 		nl = realiser.realise(clause).toString();
 		logger.debug(axiom + " = " + nl);
 	}
-	
+	/*
+	 * We rewrite EquivalentObjectProperties(Op1_1,...,Op_n) as SubObjectPropertyOf(Op_i,Op_j)) for each subset {Op_i,Op_j} with i != j
+	 */
 	@Override
 	public void visit(OWLEquivalentObjectPropertiesAxiom axiom) {
+		//
+		Set<OWLObjectPropertyExpression> ObjProperty = axiom.getProperties();
+		List<OWLObjectPropertyExpression> ObjProp = new LinkedList<>(ObjProperty);
+		for (int i = 0; i < ObjProp.size(); i++) {
+			for (int j = i + 1; j < ObjProp.size(); j++) {
+				OWLSubObjectPropertyOfAxiom subObjPAxiom = df.getOWLSubObjectPropertyOfAxiom(
+						ObjProp.get(i),
+						ObjProp.get(j));
+				subObjPAxiom.accept(this);
+			}
+		}
 	}
-	
 	@Override
 	public void visit(OWLDisjointObjectPropertiesAxiom axiom) {
+
 	}
 
 	@Override
