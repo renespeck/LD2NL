@@ -23,6 +23,7 @@ public class OptimizerDepParse {
         CoreSentence sentence = coreDocument.sentences().get(0);
         SemanticGraph dependencyParse = sentence.dependencyParse();
 
+
         List<IndexedWord> iList = dependencyParse.vertexListSorted();
         System.out.println("****************** TEST *********************");
         System.out.println("List: " + iList);

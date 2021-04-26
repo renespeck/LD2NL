@@ -241,6 +241,23 @@ public class OWLAxiomConverter implements OWLAxiomVisitor{
 	
 	@Override
 	public void visit(OWLSubDataPropertyOfAxiom axiom) {
+		logger.debug("Converting SubDataPropertyOf axiom {}", axiom);
+		// convert the sub property
+		OWLDataPropertyExpression subDataProperty = axiom.getSubProperty();
+		NLGElement subDataPropertyElement = peConverter.asNLGElement(subDataProperty,true);
+		logger.debug("subDataProperty: " + realiser.realise(subDataPropertyElement));
+
+		// convert the super property
+		OWLDataPropertyExpression superDataProperty = axiom.getSuperProperty();
+		NLGElement superDataPropertyElement = peConverter.asNLGElement(superDataProperty,false);
+		logger.debug("SuperObjectProperty: " + realiser.realise(superDataPropertyElement));
+
+		SPhraseSpec clause = nlgFactory.createClause(subDataPropertyElement, "imply", superDataPropertyElement);
+		superDataPropertyElement.setFeature(Feature.COMPLEMENTISER, null);
+
+		nl = realiser.realise(clause).toString();
+		logger.debug(axiom + " = " + nl);
+
 	}
 	
 	@Override
