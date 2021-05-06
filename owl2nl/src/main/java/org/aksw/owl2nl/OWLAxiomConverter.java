@@ -20,7 +20,11 @@
 package org.aksw.owl2nl;
 
 import java.util.List;
+import java.util.LinkedList;
+import java .util.Set;
 
+
+import org.apache.jena.ext.xerces.xs.StringList;
 import org.aksw.owl2nl.exception.OWLAxiomConversionException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.ToStringRenderer;
@@ -185,6 +189,30 @@ public class OWLAxiomConverter implements OWLAxiomVisitor{
 	
 	@Override
 	public void visit(OWLEquivalentObjectPropertiesAxiom axiom) {
+		//
+		Set<OWLObjectPropertyExpression> ObjProperty = axiom.getProperties();
+		List<OWLObjectPropertyExpression> ObjProp = new LinkedList<>(ObjProperty);
+		for (int i = 0; i < ObjProp.size(); i++) {
+			for (int j = i + 1; j < ObjProp.size(); j++) {
+				NLGElement EquiObjPropertyElement = peConverter.asNLGElement(ObjProp.get(i), false);
+				logger.debug("subProperty: " + realiser.realise(EquiObjPropertyElement));
+
+
+				NLGElement Equi2ObjPropertyElement = peConverter.asNLGElement(ObjProp.get(j), false);
+				logger.debug("subProperty: " + realiser.realise(Equi2ObjPropertyElement));
+				SPhraseSpec clause = nlgFactory.createClause(EquiObjPropertyElement, "sameAs", Equi2ObjPropertyElement);
+
+
+				/*	OWLSubObjectPropertyOfAxiom subObjPAxiom = df.getOWLSubObjectPropertyOfAxiom(
+						ObjProp.get(i),
+						ObjProp.get(j));
+				subObjPAxiom.accept(this);
+
+
+				 */
+			}
+
+		}
 	}
 	
 	@Override
