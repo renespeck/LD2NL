@@ -18,7 +18,8 @@ public class OptimizerDepParse {
         try {
             if (text == null || text == "") return text;
 
-            text="something that a man that sings rock and that a man that sings jazz  or a man that sings karaoke  or a man that sings bal";
+            text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings bal";
+
             StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
             CoreDocument coreDocument = new CoreDocument(text);
             SemanticGraphFormatter sgf = new SemanticGraphFormatter(1, 1, false, false, false, false, false);
@@ -86,8 +87,13 @@ public class OptimizerDepParse {
             //    System.out.print(afterSubjectAggregation.get(i).value()+" ");
             //}
             //System.out.println();
-            System.out.println("same subjects: "+allSubjectsSame(nodeList,verbIndex,combinedCcCommaIndex));
-
+            System.out.println("same subjects: "+checkAllSubjectsSame(nodeList,verbIndex,combinedCcCommaIndex));
+            List<IndexedWord> afterVerbAggregation=aggregateByVerbs(nodeList,verbIndex,combinedCcCommaIndex);
+            System.out.println("observing :");
+            for (int i=0;i<afterVerbAggregation.size();i++){
+                System.out.print(afterVerbAggregation.get(i).value()+" ");
+            }
+            System.out.println();
 
             return text;
         } catch (Exception e) {
@@ -95,7 +101,7 @@ public class OptimizerDepParse {
         }
     }
     //method to check whether all verbs in the sentence are same or not
-    public static boolean allVerbsSame(List<IndexedWord> verbs){
+    public static boolean checkAllVerbsSame(List<IndexedWord> verbs){
         //System.out.println("hola:"+verbs);
         for(int j=1;j<verbs.size();j++){
             if(!((verbs.get(0).value()).equals(verbs.get(j).value()))){
@@ -109,17 +115,17 @@ public class OptimizerDepParse {
         }
         return true;
     }
-    //method to check whether all verbs in the sentence are same or not
-    public static boolean allSubjectsSame(List<IndexedWord> nodeList,List<Integer> verbInderx,List<Integer> combinedCcCommaIndex){
+    //method to check whether all subjects in the sentence are same or not
+    public static boolean checkAllSubjectsSame(List<IndexedWord> nodeList,List<Integer> verbIndex,List<Integer> combinedCcCommaIndex){
         //System.out.println("hola:"+verbs);
-        int numberOfSubjects=verbInderx.size();
+        int numberOfSubjects=verbIndex.size();
         List<String> subjects=new ArrayList();
         //storing subjects
         for(int j=0;j<numberOfSubjects;j++){
             if(j==0){
                 int pointer=0;
                 String s=""; //temporary string
-                for(;pointer<verbInderx.get(j);pointer++){
+                for(;pointer<verbIndex.get(j);pointer++){
                     s+=nodeList.get(pointer).value();
                 }
                 subjects.add(s);
@@ -127,7 +133,7 @@ public class OptimizerDepParse {
             else{
                 int pointer=combinedCcCommaIndex.get(j-1)+1;
                 String s=""; //temporary string
-                for(;pointer<verbInderx.get(j);pointer++){
+                for(;pointer<verbIndex.get(j);pointer++){
                     s+=nodeList.get(pointer).value();
                 }
                 subjects.add(s);
@@ -150,7 +156,7 @@ public class OptimizerDepParse {
         return true;
     }
     //if the subject are same then this method will perform the aggregation on subjects
-    public static List<IndexedWord> subjectAggregation(List<IndexedWord> nodeList,List<Integer> verbIndex,List<Integer> combinedCcCommaIndex){
+    public static List<IndexedWord> aggregateBySubjects(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex){
         //System.out.println("hola:"+verbs);
         List<IndexedWord> aggregatedList=new ArrayList();
         int pointer=0;
@@ -174,6 +180,34 @@ public class OptimizerDepParse {
             }
 
         }
+        return aggregatedList;
+    }
+    //if the verbs are same then this method will perform the aggregation on verbs
+    public static List<IndexedWord> aggregateByVerbs(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex){
+        //System.out.println("hola:"+verbs);
+        List<IndexedWord> aggregatedList=new ArrayList();
+        int pointer=0;
+        for(int j=0;j<verbIndex.size();j++){
+            if(j==0){
+                for(;pointer<=combinedCcCommaIndex.get(j);pointer++){
+                    aggregatedList.add(nodeList.get(pointer));
+                }
+            }
+            else if (j==verbIndex.size()-1){
+                pointer=verbIndex.get(j)+1;
+                for(;pointer<nodeList.size();pointer++){
+                    aggregatedList.add(nodeList.get(pointer));
+                }
+            }
+            else{
+                pointer=verbIndex.get(j)+1;
+                for (;pointer<=combinedCcCommaIndex.get(j);pointer++){
+                    aggregatedList.add(nodeList.get(pointer));
+                }
+            }
+
+        }
+
         return aggregatedList;
     }
 }
