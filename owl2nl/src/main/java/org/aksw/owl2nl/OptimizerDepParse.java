@@ -18,7 +18,7 @@ public class OptimizerDepParse {
         try {
             if (text == null || text == "") return text;
 
-            text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings bal";
+            //text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings bal";
 
             StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
             CoreDocument coreDocument = new CoreDocument(text);
@@ -55,7 +55,7 @@ public class OptimizerDepParse {
             List<Integer> verbIndex = new ArrayList();
 
             //List<Dict> verbList = new ArrayList();
-            List<String> finalText = new ArrayList();
+            //List<String> finalText = new ArrayList();
 
             //loading
             //ccList=dependencyParse.getAllNodesByPartOfSpeechPattern("CC") ;
@@ -87,15 +87,57 @@ public class OptimizerDepParse {
             //    System.out.print(afterSubjectAggregation.get(i).value()+" ");
             //}
             //System.out.println();
-            System.out.println("same subjects: "+checkAllSubjectsSame(nodeList,verbIndex,combinedCcCommaIndex));
+            /*System.out.println("same subjects: "+checkAllSubjectsSame(nodeList,verbIndex,combinedCcCommaIndex));
             List<IndexedWord> afterVerbAggregation=aggregateByVerbs(nodeList,verbIndex,combinedCcCommaIndex);
             System.out.println("observing :");
             for (int i=0;i<afterVerbAggregation.size();i++){
                 System.out.print(afterVerbAggregation.get(i).value()+" ");
             }
-            System.out.println();
+            System.out.println();*/
+            boolean subjectsChecker=false;
+            boolean verbsChecker=false;
+            boolean aggregated=false;
+            String finalText="";
+            List<IndexedWord> finalTextList=new ArrayList<>();
+            if(combinedCcCommaList.size()>=1) {
+                subjectsChecker = checkAllSubjectsSame(nodeList, verbIndex, combinedCcCommaIndex);
+                verbsChecker = checkAllVerbsSame(verbList);
+            }
+            if(combinedCcCommaList.size()>=1 && verbList.size()==combinedCcCommaList.size()+1) {
+                //System.out.println("HHHHHHHHHHHHHH");
+                if (subjectsChecker) {
+                    finalTextList = aggregateBySubjects(nodeList, verbIndex, combinedCcCommaIndex);
+                    aggregated = true;
+                    if (verbsChecker) {
+                        finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
+                    }
+                }
+            }
+            if(aggregated){
 
-            return text;
+                for (int i=0;i<finalTextList.size();i++){
+                    if(i<finalTextList.size()-1){
+                        if (finalTextList.get(i+1).value().equals(",")){
+                            finalText=finalText+finalTextList.get(i).value();
+                        }
+                        else{
+                            finalText = finalText + finalTextList.get(i).value() + " ";
+                        }
+                    }
+                    else {
+                        finalText = finalText + finalTextList.get(i).value() + " ";
+                    }
+                }
+                System.out.println("Text after our changes : " + finalText);
+            }
+
+            else{
+                finalText=text;
+                System.out.println("Text after our changes : " + finalText);
+            }
+
+
+            return finalText;
         } catch (Exception e) {
             return text;
         }
