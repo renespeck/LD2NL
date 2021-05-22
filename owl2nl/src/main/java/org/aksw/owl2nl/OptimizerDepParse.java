@@ -11,6 +11,7 @@ import edu.stanford.nlp.semgraph.SemanticGraphFormatter;
 import javax.xml.soap.SOAPPart;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class OptimizerDepParse {
 
@@ -106,9 +107,12 @@ public class OptimizerDepParse {
             if(combinedCcCommaList.size()>=1 && verbList.size()==combinedCcCommaList.size()+1) {
                 //System.out.println("HHHHHHHHHHHHHH");
                 if (subjectsChecker) {
+                    //System.out.println("HHHHHHHHHHHHHH");
+                    //System.out.println(dependencyParse);
                     finalTextList = aggregateBySubjects(nodeList, verbIndex, combinedCcCommaIndex);
                     aggregated = true;
                     if (verbsChecker) {
+                        //System.out.println("HHHHHHHHHHHHHH");
                         finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
                     }
                 }
@@ -170,7 +174,9 @@ public class OptimizerDepParse {
                 for(;pointer<verbIndex.get(j);pointer++){
                     s+=nodeList.get(pointer).value();
                 }
-                subjects.add(s);
+                if(!(s.equals(""))) {
+                    subjects.add(s);
+                }
             }
             else{
                 int pointer=combinedCcCommaIndex.get(j-1)+1;
@@ -178,8 +184,14 @@ public class OptimizerDepParse {
                 for(;pointer<verbIndex.get(j);pointer++){
                     s+=nodeList.get(pointer).value();
                 }
-                subjects.add(s);
+                if(!(s.equals(""))) {
+                    subjects.add(s);
+                }
+
             }
+        }
+        if(subjects.size()==1){
+            return false;
         }
         for(int i=0;i<subjects.size()-1;i++){
             //String maxString="";
@@ -194,6 +206,13 @@ public class OptimizerDepParse {
 
 
         }
+        //System.out.println("Subjects:");
+        //System.out.println(subjects.get(1));
+        //System.out.println(subjects.size());
+        //for(int i=0;i<subjects.size();i++){
+          //  System.out.println(subjects.get(i));
+        //}
+
 
         return true;
     }
@@ -253,3 +272,4 @@ public class OptimizerDepParse {
         return aggregatedList;
     }
 }
+
