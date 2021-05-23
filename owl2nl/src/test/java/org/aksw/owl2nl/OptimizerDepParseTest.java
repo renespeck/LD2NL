@@ -83,7 +83,7 @@ public class OptimizerDepParseTest {
     }
 
     @Test
-    public void testComple() {
+    public void testSubjectAndVerAggregation() {
 
         // a person that sings karaoke or a person that sings  jazz
         ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man), df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, Jazz), man));
