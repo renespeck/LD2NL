@@ -32,10 +32,6 @@ public class OptimizerDepParse {
 
 
             List<IndexedWord> nodeList = dependencyParse.vertexListSorted();
-            //System.out.println("****************** TEST *********************");
-            //System.out.println("List: " + nodeList);
-            //System.out.println("List: " + nodeList.get(0).value());
-            //System.out.println("List: " + nodeList.get(0).tag());
 
             //initializing
             System.out.println("Example: dependency parse");
@@ -55,12 +51,7 @@ public class OptimizerDepParse {
             List<IndexedWord> verbList = new ArrayList();
             List<Integer> verbIndex = new ArrayList();
 
-            //List<Dict> verbList = new ArrayList();
-            //List<String> finalText = new ArrayList();
 
-            //loading
-            //ccList=dependencyParse.getAllNodesByPartOfSpeechPattern("CC") ;
-            //System.out.println("LOLLLLLLL"+ccList);
             /*loading list*/
             for (int i = 0; i < nodeList.size(); i++) {
                 if ((nodeList.get(i).tag()).equals("VBZ")) {
@@ -77,24 +68,9 @@ public class OptimizerDepParse {
                     commaIndex.add(i);
                     combinedCcCommaList.add(nodeList.get(i));
                     combinedCcCommaIndex.add(i);
-                    //System.out.println("comma is found");
+
                 }
             }
-            //System.out.println("ajaira:" + verbList + "\n" + ccList + "\n" + commaList + "\n" + commaIndex);
-            //System.out.println("same verbs: "+allVerbsSame(verbList));
-            //List<IndexedWord> afterSubjectAggregation=subjectAggregation(nodeList,verbIndex,combinedCcCommaIndex);
-            //System.out.println("observing :");
-            //for (int i=0;i<afterSubjectAggregation.size();i++){
-            //    System.out.print(afterSubjectAggregation.get(i).value()+" ");
-            //}
-            //System.out.println();
-            /*System.out.println("same subjects: "+checkAllSubjectsSame(nodeList,verbIndex,combinedCcCommaIndex));
-            List<IndexedWord> afterVerbAggregation=aggregateByVerbs(nodeList,verbIndex,combinedCcCommaIndex);
-            System.out.println("observing :");
-            for (int i=0;i<afterVerbAggregation.size();i++){
-                System.out.print(afterVerbAggregation.get(i).value()+" ");
-            }
-            System.out.println();*/
             boolean subjectsChecker=false;
             boolean verbsChecker=false;
             boolean aggregated=false;
@@ -105,14 +81,11 @@ public class OptimizerDepParse {
                 verbsChecker = checkAllVerbsSame(verbList);
             }
             if(combinedCcCommaList.size()>=1 && verbList.size()==combinedCcCommaList.size()+1) {
-                //System.out.println("HHHHHHHHHHHHHH");
+
                 if (subjectsChecker) {
-                    //System.out.println("HHHHHHHHHHHHHH");
-                    //System.out.println(dependencyParse);
                     finalTextList = aggregateBySubjects(nodeList, verbIndex, combinedCcCommaIndex);
                     aggregated = true;
                     if (verbsChecker) {
-                        //System.out.println("HHHHHHHHHHHHHH");
                         finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
                     }
                 }
@@ -148,13 +121,11 @@ public class OptimizerDepParse {
     }
     //method to check whether all verbs in the sentence are same or not
     public static boolean checkAllVerbsSame(List<IndexedWord> verbs){
-        //System.out.println("hola:"+verbs);
+
         for(int j=1;j<verbs.size();j++){
             if(!((verbs.get(0).value()).equals(verbs.get(j).value()))){
-                //not same verb
-                //sameVerb=false;
-                return false;
 
+                return false;
             }
 
 
@@ -163,7 +134,7 @@ public class OptimizerDepParse {
     }
     //method to check whether all subjects in the sentence are same or not
     public static boolean checkAllSubjectsSame(List<IndexedWord> nodeList,List<Integer> verbIndex,List<Integer> combinedCcCommaIndex){
-        //System.out.println("hola:"+verbs);
+
         int numberOfSubjects=verbIndex.size();
         List<String> subjects=new ArrayList();
         //storing subjects
@@ -194,7 +165,7 @@ public class OptimizerDepParse {
             return false;
         }
         for(int i=0;i<subjects.size()-1;i++){
-            //String maxString="";
+
             if(subjects.get(i).length()>=subjects.get(i+1).length()){
                 if(!(subjects.get(i).contains(subjects.get(i+1)))){
                     return false;
@@ -206,13 +177,6 @@ public class OptimizerDepParse {
 
 
         }
-        //System.out.println("Subjects:");
-        //System.out.println(subjects.get(1));
-        //System.out.println(subjects.size());
-        //for(int i=0;i<subjects.size();i++){
-          //  System.out.println(subjects.get(i));
-        //}
-
 
         return true;
     }
@@ -245,7 +209,7 @@ public class OptimizerDepParse {
     }
     //if the verbs are same then this method will perform the aggregation on verbs
     public static List<IndexedWord> aggregateByVerbs(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex){
-        //System.out.println("hola:"+verbs);
+
         List<IndexedWord> aggregatedList=new ArrayList();
         int pointer=0;
         for(int j=0;j<verbIndex.size();j++){
