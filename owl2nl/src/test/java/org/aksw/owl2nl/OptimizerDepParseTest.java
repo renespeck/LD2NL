@@ -83,10 +83,11 @@ public class OptimizerDepParseTest {
     }
 
     @Test
-    public void testSubjectAndVerAggregation() {
+    public void testSubjectAndVerbAggregation() {
 
         // a person that sings karaoke or a person that sings  jazz
-        ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man), df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, Jazz), man));
+        ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, Jazz), man));
         text = converter.convert(ce);
         System.out.println(ce + "=" + text);
     }
