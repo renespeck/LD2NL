@@ -6,12 +6,10 @@ import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphFormatter;
-//import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 
-import javax.xml.soap.SOAPPart;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
 
 public class OptimizerDepParse {
 
@@ -19,7 +17,7 @@ public class OptimizerDepParse {
         try {
             if (text == null || text == "") return text;
 
-            //text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings bal";
+            //text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings metal";
 
             StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
             CoreDocument coreDocument = new CoreDocument(text);
@@ -30,12 +28,13 @@ public class OptimizerDepParse {
             SemanticGraph dependencyParse = sentence.dependencyParse();
 
 
-
+            // Storing nodes of the parse tree in a list
             List<IndexedWord> nodeList = dependencyParse.vertexListSorted();
 
             //initializing
-            System.out.println("Example: dependency parse");
-            System.out.println(dependencyParse.toRecoveredSentenceString()); //complete sentence
+
+            // Complete sentence stored
+            String completeSentence=dependencyParse.toRecoveredSentenceString();
             System.out.println("**************************************************");
             System.out.println("Text before our changes : " + text);
 
@@ -119,7 +118,8 @@ public class OptimizerDepParse {
             return text;
         }
     }
-    //method to check whether all verbs in the sentence are same or not
+
+    //Method to check whether all verbs in the sentence are same or not
     public static boolean checkAllVerbsSame(List<IndexedWord> verbs){
 
         for(int j=1;j<verbs.size();j++){
@@ -132,7 +132,8 @@ public class OptimizerDepParse {
         }
         return true;
     }
-    //method to check whether all subjects in the sentence are same or not
+
+    //Method to check whether all subjects in the sentence are same or not
     public static boolean checkAllSubjectsSame(List<IndexedWord> nodeList,List<Integer> verbIndex,List<Integer> combinedCcCommaIndex){
 
         int numberOfSubjects=verbIndex.size();
@@ -180,9 +181,9 @@ public class OptimizerDepParse {
 
         return true;
     }
-    //if the subject are same then this method will perform the aggregation on subjects
+
+    //If the subject are same then this method will perform the aggregation on subjects
     public static List<IndexedWord> aggregateBySubjects(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex){
-        //System.out.println("hola:"+verbs);
         List<IndexedWord> aggregatedList=new ArrayList();
         int pointer=0;
         for(int j=0;j<verbIndex.size();j++){
@@ -207,7 +208,8 @@ public class OptimizerDepParse {
         }
         return aggregatedList;
     }
-    //if the verbs are same then this method will perform the aggregation on verbs
+
+    //If the verbs are same then this method will perform the aggregation on verbs
     public static List<IndexedWord> aggregateByVerbs(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex){
 
         List<IndexedWord> aggregatedList=new ArrayList();
