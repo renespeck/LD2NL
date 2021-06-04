@@ -39,6 +39,7 @@ import simplenlg.realiser.english.Realiser;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 //import uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
+//import org.semanticweb.owlapi.dlsyntax.parser;
 /**
  * Converts OWL axioms into natural language.
  * @author Lorenz Buehmann
@@ -209,6 +210,15 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 
 	@Override
 	public void visit(OWLInverseObjectPropertiesAxiom axiom) {
+		logger.debug("Converting InverseObjectProperty axiom {}", axiom);
+
+		OWLObjectPropertyExpression propertyExpression = axiom.getFirstProperty();
+		OWLObjectPropertyExpression secondProperty = axiom.getSecondProperty();
+		OWLObjectPropertyExpression inversePropertyExpression = propertyExpression.getInverseProperty();
+
+		OWLSubObjectPropertyOfAxiom subObjPropAxiom = df.getOWLSubObjectPropertyOfAxiom(
+				propertyExpression, inversePropertyExpression);
+		subObjPropAxiom.accept(this);
 	}
 
 	@Override
