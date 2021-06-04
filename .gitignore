@@ -534,3 +534,4 @@
 /avatar/target/classes/org/aksw/avatar/clustering/WeightedGraph.class
 /Triple2NL/target/classes/wordnet/linux/wordnet_properties.xml
 /.idea/
+/owl2nl/target/classes/org/aksw/owl2nl/OptimizerDepParse.class

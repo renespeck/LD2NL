@@ -55,7 +55,9 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 	private OWLDataFactory df = new OWLDataFactoryImpl();
 
 	private String nl;
-	private OptimizerDepParse optimiser;
+	private static OptimizerDepParse optimiser;
+
+	private static OWLOntologyManager owlOntologyManager;
 
 	public OWLAxiomConverter(Lexicon lexicon) {
 		nlgFactory = new NLGFactory(lexicon);
@@ -64,6 +66,7 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		ceConverter = new OWLClassExpressionConverter(lexicon);
 		peConverter = new OWLPropertyExpressionConverter(lexicon);
 		optimiser = new OptimizerDepParse();
+		owlOntologyManager = OWLManager.createOWLOntologyManager();
 	}
 
 	public OWLAxiomConverter() {
@@ -391,8 +394,7 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		String ontologyURL = "http://www.cs.man.ac.uk/~stevensr/ontology/family.rdf.owl";// subproperties of the form 'isSomething'
 		//ontologyURL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl"; // subproperties of the form 'hasSomething'
 
-		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = man.loadOntology(IRI.create(ontologyURL));
+		OWLOntology ontology = owlOntologyManager.loadOntology(IRI.create(ontologyURL));
 
 		OWLAxiomConverter converter = new OWLAxiomConverter();
 		for (OWLAxiom axiom : ontology.getAxioms()) {
@@ -408,8 +410,7 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 	public Map<String, String> readOntology(String path) throws Exception {
 		try {
 			// read the ontology from the path
-			OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-			OWLOntology ontology = man.loadOntology(IRI.create(path));
+			OWLOntology ontology = owlOntologyManager.loadOntology(IRI.create(path));
 
 			Map<String, String> axioms = new HashMap<>();
 			// convert all the axioms

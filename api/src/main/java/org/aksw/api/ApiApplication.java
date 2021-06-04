@@ -1,6 +1,7 @@
-package org.diceresearch.api;
+package org.aksw.api;
 
 import com.google.gson.Gson;
+import org.apache.solr.client.solrj.io.stream.ScoreNodesStream;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.aksw.owl2nl.OWLAxiomConverter;
 
-import javax.json.Json;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootApplication
@@ -34,9 +36,9 @@ public class ApiApplication {
 				path = "http://www.cs.man.ac.uk/~stevensr/ontology/family.rdf.owl";
 			path = URLDecoder.decode(path, StandardCharsets.UTF_8.toString());
 			OWLAxiomConverter converter = new OWLAxiomConverter();
-			Map<String, String> json = converter.readOntology(path);
+			Map<String, String> data = converter.readOntology(path);
 			Gson gson = new Gson();
-			response = gson.toJson(json);
+			response = gson.toJson(data.values());
 			System.out.println(String.format("reading from %s \n Ontologies :\n %s", path, response));
 			return response;
 		} catch (Exception e) {
@@ -44,4 +46,7 @@ public class ApiApplication {
 			return String.format("Internal Error. Please try later! \n \n %s", e.getMessage());
 		}
 	}
+
+
 }
+
