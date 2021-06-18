@@ -27,7 +27,6 @@ import org.semanticweb.owlapi.io.ToStringRenderer;
 import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import simplenlg.features.Feature;
 import simplenlg.framework.CoordinatedPhraseElement;
 import simplenlg.framework.NLGElement;
@@ -36,11 +35,11 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
-//import uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 /**
  * Converts OWL axioms into natural language.
  * @author Lorenz Buehmann
+ * Features added by : KG2NL_WS20 team
  *
  */
 public class OWLAxiomConverter implements OWLAxiomVisitor {
@@ -66,8 +65,9 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 
 		ceConverter = new OWLClassExpressionConverter(lexicon);
 		peConverter = new OWLPropertyExpressionConverter(lexicon);
-		optimiser = new OptimizerDepParse();
+
 		owlOntologyManager = OWLManager.createOWLOntologyManager();
+		optimiser = new OptimizerDepParse();
 	}
 
 	public OWLAxiomConverter() {
@@ -88,11 +88,16 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		if (axiom.isLogicalAxiom()) {
 			logger.debug("Converting " + axiom.getAxiomType().getName() + " axiom: " + axiom);
 			try {
+				long start1 = System.currentTimeMillis();
 				axiom.accept(this);
+				long end1 = System.currentTimeMillis();
+				System.out.println("Time consumed in axiom text generation : " + (end1-start1)/1000F + " sec");
 				if(nl != null) {
 					//System.out.println("Before Optimization :" + nl);
+					long start2 = System.currentTimeMillis();
 					nl = optimiser.optimize(nl);
-					//System.out.println("After Optimization :" + nl);
+					long end2 = System.currentTimeMillis();
+					System.out.println("Time consumed in dependency parsing : " + (end2-start2)/1000F + " sec");
 				}
 				return nl;
 			} catch (Exception e) {
