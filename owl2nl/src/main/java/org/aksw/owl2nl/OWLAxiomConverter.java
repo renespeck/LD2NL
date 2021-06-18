@@ -448,9 +448,9 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		String ontologyURL = "http://www.cs.man.ac.uk/~stevensr/ontology/family.rdf.owl";// subproperties of the form 'isSomething'
 		//ontologyURL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl"; // subproperties of the form 'hasSomething'
 
+		OWLAxiomConverter converter = new OWLAxiomConverter();
 		OWLOntology ontology = owlOntologyManager.loadOntology(IRI.create(ontologyURL));
 
-		OWLAxiomConverter converter = new OWLAxiomConverter();
 		for (OWLAxiom axiom : ontology.getAxioms()) {
 			converter.convert(axiom);
 		}
