@@ -88,16 +88,15 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		if (axiom.isLogicalAxiom()) {
 			logger.debug("Converting " + axiom.getAxiomType().getName() + " axiom: " + axiom);
 			try {
-				long start1 = System.currentTimeMillis();
+				long start = System.currentTimeMillis();
 				axiom.accept(this);
-				long end1 = System.currentTimeMillis();
-				System.out.println("Time consumed in axiom text generation : " + (end1-start1)/1000F + " sec");
+				long end = System.currentTimeMillis();
+				System.out.println("Time consumed in axiom text generation : " + (end-start)/1000F + " sec");
 				if(nl != null) {
-					//System.out.println("Before Optimization :" + nl);
-					long start2 = System.currentTimeMillis();
+					start = System.currentTimeMillis();
 					nl = optimiser.optimize(nl);
-					long end2 = System.currentTimeMillis();
-					System.out.println("Time consumed in dependency parsing : " + (end2-start2)/1000F + " sec");
+					end = System.currentTimeMillis();
+					System.out.println("Time consumed by dependency parser(Optimiser) : " + (end-start)/1000F + " sec");
 				}
 				return nl;
 			} catch (Exception e) {
