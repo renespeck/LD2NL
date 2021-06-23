@@ -26,6 +26,9 @@ public class OWLAxiomConverterTest {
     private static OWLObjectProperty hasMaleSibling;
 
     private static OWLDataProperty hasBirthYear;
+    private static OWLDataProperty hasLastName;
+    private static OWLDataProperty hasName;
+    private static OWLDataProperty isCalled;
     private static OWLDataRange dataRange;
 
     private static OWLClass man;
@@ -60,6 +63,9 @@ public class OWLAxiomConverterTest {
         hasMaleSibling = df.getOWLObjectProperty("hasMaleSibling", pm);
 
         hasBirthYear = df.getOWLDataProperty("hasBirthYear", pm);
+        hasLastName = df.getOWLDataProperty("hasLastName", pm);
+        hasName = df.getOWLDataProperty("hasName", pm);
+        isCalled = df.getOWLDataProperty("isCalled", pm);
 //        dataRange = df.getOWLDatatype("integer", pm);
 
         man = df.getOWLClass("man", pm);
@@ -107,6 +113,15 @@ public class OWLAxiomConverterTest {
         System.out.println(axiom + " = " + text);
         Assert.assertEquals("isUncleInLawOf ⊑ isInLawOf", axiom.toString());
         Assert.assertEquals("X's being uncle in law of Y implies X is in law of Y", text);
+    }
+
+    @Test
+    public void testSubDataProperty() throws OWLAxiomConversionException {
+        axiom = df.getOWLSubDataPropertyOfAxiom(hasLastName, hasName);
+        text = converter.convert(axiom);
+        System.out.println(axiom + " = " + text);
+        Assert.assertEquals("hasLastName⊑hasName", axiom.toString());
+        Assert.assertEquals("X's having last name Y implies X has name Y", text);
     }
 
     @Test
@@ -161,6 +176,15 @@ public class OWLAxiomConverterTest {
         System.out.println(axiom + " = " + text);
         Assert.assertEquals("hasBrother ≡ hasMaleSibling", axiom.toString());
         Assert.assertEquals("X's having brother Y is equivalent to that X has male sibling Y", text);
+    }
+
+    @Test
+    public void testEquivalentDataProperty() throws OWLAxiomConversionException {
+        axiom  = df.getOWLEquivalentDataPropertiesAxiom(hasName, isCalled);
+        text = converter.convert(axiom);
+        System.out.println(axiom + " = " + text);
+        Assert.assertEquals("hasName ≡ isCalled", axiom.toString());
+        Assert.assertEquals("X's having name Y is equivalent to that X is called Y", text);
     }
 
     @Test
