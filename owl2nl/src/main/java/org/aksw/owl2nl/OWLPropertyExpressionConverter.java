@@ -117,9 +117,6 @@ public class OWLPropertyExpressionConverter implements OWLPropertyExpressionVisi
 
         return phrase;
     }
-
-
-
     @NotNull
     @Override
     public NLGElement visit(@NotNull OWLAnnotationProperty owlAnnotationProperty) {
