@@ -19,10 +19,9 @@
  */
 package org.aksw.owl2nl;
 
-import java.util.*;
-
 import org.aksw.owl2nl.exception.OWLAxiomConversionException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.io.ToStringRenderer;
 import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
@@ -35,24 +34,26 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
-import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
+
+import java.util.*;
+
 /**
  * Converts OWL axioms into natural language.
+ *
  * @author Lorenz Buehmann
  * Features added by : KG2NL_WS20 team
- *
  */
 public class OWLAxiomConverter implements OWLAxiomVisitor {
 
 	private static final Logger logger = LoggerFactory.getLogger(OWLAxiomConverter.class);
 
-	private NLGFactory nlgFactory;
-	private Realiser realiser;
+	private final NLGFactory nlgFactory;
+	private final Realiser realiser;
 
-	private OWLClassExpressionConverter ceConverter;
-	private OWLPropertyExpressionConverter peConverter;
+	private final OWLClassExpressionConverter ceConverter;
+	private final OWLPropertyExpressionConverter peConverter;
 
-	private OWLDataFactory df = new OWLDataFactoryImpl();
+	private final OWLDataFactory df = new OWLDataFactoryImpl();
 
 	private String nl;
 	private static OptimizerDepParse optimiser;
@@ -91,12 +92,13 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 				long start = System.currentTimeMillis();
 				axiom.accept(this);
 				long end = System.currentTimeMillis();
-				System.out.println("Time consumed in axiom text generation : " + (end-start)/1000F + " sec");
-				if(nl != null) {
+				System.out.println("**************************************************");
+				System.out.println("Time consumed in axiom text generation : " + (end - start) / 1000F + " sec");
+				if (nl != null) {
 					start = System.currentTimeMillis();
 					nl = optimiser.optimize(nl);
 					end = System.currentTimeMillis();
-					System.out.println("Time consumed by dependency parser(Optimiser) : " + (end-start)/1000F + " sec");
+					System.out.println("Time consumed by dependency parser(Optimiser) : " + (end - start) / 1000F + " sec");
 				}
 				return nl;
 			} catch (Exception e) {

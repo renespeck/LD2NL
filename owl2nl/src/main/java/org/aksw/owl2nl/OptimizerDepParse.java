@@ -35,7 +35,6 @@ public class OptimizerDepParse {
 
             // Complete sentence stored
             String completeSentence = dependencyParse.toRecoveredSentenceString();
-            System.out.println("**************************************************");
             System.out.println("Text before using Dependency Parsing : " + text);
 
             List<IndexedWord> ccList = new ArrayList();
