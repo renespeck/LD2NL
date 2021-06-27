@@ -19,15 +19,13 @@
  */
 package org.aksw.owl2nl;
 
-import java.util.*;
-
 import org.aksw.owl2nl.exception.OWLAxiomConversionException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.io.ToStringRenderer;
 import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import simplenlg.features.Feature;
 import simplenlg.framework.CoordinatedPhraseElement;
 import simplenlg.framework.NLGElement;
@@ -36,27 +34,31 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
-//import uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxObjectRenderer;
-import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
+
+import java.util.*;
+
 /**
  * Converts OWL axioms into natural language.
- * @author Lorenz Buehmann
  *
+ * @author Lorenz Buehmann
+ * Features added by : KG2NL_WS20 team
  */
 public class OWLAxiomConverter implements OWLAxiomVisitor {
 
 	private static final Logger logger = LoggerFactory.getLogger(OWLAxiomConverter.class);
 
-	private NLGFactory nlgFactory;
-	private Realiser realiser;
+	private final NLGFactory nlgFactory;
+	private final Realiser realiser;
 
-	private OWLClassExpressionConverter ceConverter;
-	private OWLPropertyExpressionConverter peConverter;
+	private final OWLClassExpressionConverter ceConverter;
+	private final OWLPropertyExpressionConverter peConverter;
 
-	private OWLDataFactory df = new OWLDataFactoryImpl();
+	private final OWLDataFactory df = new OWLDataFactoryImpl();
 
 	private String nl;
-	private OptimizerDepParse optimiser;
+	private static OptimizerDepParse optimiser;
+
+	private static OWLOntologyManager owlOntologyManager;
 
 	public OWLAxiomConverter(Lexicon lexicon) {
 		nlgFactory = new NLGFactory(lexicon);
@@ -64,6 +66,8 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 
 		ceConverter = new OWLClassExpressionConverter(lexicon);
 		peConverter = new OWLPropertyExpressionConverter(lexicon);
+
+		owlOntologyManager = OWLManager.createOWLOntologyManager();
 		optimiser = new OptimizerDepParse();
 	}
 
@@ -85,11 +89,16 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		if (axiom.isLogicalAxiom()) {
 			logger.debug("Converting " + axiom.getAxiomType().getName() + " axiom: " + axiom);
 			try {
+				long start = System.currentTimeMillis();
 				axiom.accept(this);
-				if(nl != null) {
-					//System.out.println("Before Optimization :" + nl);
+				long end = System.currentTimeMillis();
+				System.out.println("**************************************************");
+				System.out.println("Time consumed in axiom text generation : " + (end - start) / 1000F + " sec");
+				if (nl != null) {
+					start = System.currentTimeMillis();
 					nl = optimiser.optimize(nl);
-					//System.out.println("After Optimization :" + nl);
+					end = System.currentTimeMillis();
+					System.out.println("Time consumed by dependency parser(Optimiser) : " + (end - start) / 1000F + " sec");
 				}
 				return nl;
 			} catch (Exception e) {
@@ -445,10 +454,9 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 		String ontologyURL = "http://www.cs.man.ac.uk/~stevensr/ontology/family.rdf.owl";// subproperties of the form 'isSomething'
 		//ontologyURL = "https://protege.stanford.edu/ontologies/pizza/pizza.owl"; // subproperties of the form 'hasSomething'
 
-		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = man.loadOntology(IRI.create(ontologyURL));
-
 		OWLAxiomConverter converter = new OWLAxiomConverter();
+		OWLOntology ontology = owlOntologyManager.loadOntology(IRI.create(ontologyURL));
+
 		for (OWLAxiom axiom : ontology.getAxioms()) {
 			converter.convert(axiom);
 		}
@@ -462,8 +470,7 @@ public class OWLAxiomConverter implements OWLAxiomVisitor {
 	public Map<String, String> readOntology(String path) throws Exception {
 		try {
 			// read the ontology from the path
-			OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-			OWLOntology ontology = man.loadOntology(IRI.create(path));
+			OWLOntology ontology = owlOntologyManager.loadOntology(IRI.create(path));
 
 			Map<String, String> axioms = new HashMap<>();
 			// convert all the axioms
