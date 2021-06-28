@@ -128,6 +128,14 @@ public class OptimizerDepParse {
                 }
             }
             if (aggregated) {
+                //removing WDT pos tag WDT stands for whdeterminer
+
+                for (int i=0;i<finalTextList.size();i++){
+                    if(finalTextList.get(i).tag().equals("WDT")){
+                        finalTextList.remove(i);
+                    }
+                }
+
                 for (int i = 0; i < finalTextList.size(); i++) {
                     finalText.append(finalTextList.get(i).value());
                     if (i == finalTextList.size() - 1) {
