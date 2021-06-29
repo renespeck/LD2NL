@@ -20,6 +20,11 @@ _First create the environment in the server._
 3) pull docker image from dockerhub. Login to dockerHub first from cli
    
    `docker pull hub_account/image_name:tag`
+   
+   Or Create Docker Image from dockerfile -
+   
+   `docker build hub_account/image_name:tag .`
+   
 4) create container
    
    `docker run -d --name container_name hub_account/image_name`
