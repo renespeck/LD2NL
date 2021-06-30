@@ -23,7 +23,7 @@ _First create the environment in the server._
    
    Or Create Docker Image from dockerfile -
    
-   `docker build hub_account/image_name:tag .`
+   `docker build -t hub_account/image_name:tag .`
    
 4) create container
    
