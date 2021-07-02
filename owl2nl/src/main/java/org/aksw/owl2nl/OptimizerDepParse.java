@@ -1,5 +1,6 @@
 package org.aksw.owl2nl;
 
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
@@ -49,6 +50,34 @@ public class OptimizerDepParse {
             List<IndexedWord> verbList = new ArrayList();
             List<Integer> verbIndex = new ArrayList();
 
+            List<IndexedWord> objectList = new ArrayList();
+            List<Integer> objectIndex = new ArrayList();
+
+            //object list
+            int objectcounter=0;
+            for (int i = 0; i < nodeList.size(); i++) {
+                String object="";
+                if ((nodeList.get(i).tag()).equals("VBZ")) {
+                    objectcounter = i+1;
+                    for(int j=i+1; j<nodeList.size(); j++){
+                        if ((nodeList.get(j).tag()).equals("CC") || (nodeList.get(j).tag()).equals(".")){
+                            i++;
+                            break;
+                        }
+                        else{
+                            object=object+nodeList.get(j)+" ";
+                            i++;
+                        }
+                    };
+                }
+                if(object=="" || object=="."){
+
+                }
+                else{
+                    objectList.add(new IndexedWord(CoreLabel.wordFromString(object)));
+                    objectIndex.add(objectcounter);
+                }
+            }
 
             /*loading list*/
             for (int i = 0; i < nodeList.size(); i++) {
@@ -160,6 +189,16 @@ public class OptimizerDepParse {
             }
         }
 
+        return true;
+    }
+
+    public static boolean checkAllObjectsSame(List<IndexedWord> objects){
+        for(int j=1;j<objects.size();j++){
+            if(!((objects.get(0).value()).equals(objects.get(j).value()))){
+                //not same objects
+                return false;
+            }
+        }
         return true;
     }
 
