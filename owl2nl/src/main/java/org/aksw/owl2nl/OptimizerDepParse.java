@@ -142,6 +142,14 @@ public class OptimizerDepParse {
                 if(finalTextList.get(i).tag().equals("WDT")){
                     finalTextList.remove(i);
                 }
+
+                else{
+                    //for different subject same verbs and same objects
+                    if(verbsChecker && objectChecker){
+                        finalTextList=aggregateByObjects(nodeList,verbIndex,combinedCcCommaIndex);
+                        aggregated=true;
+                    }
+                }
             }
 
             if (aggregated) {
