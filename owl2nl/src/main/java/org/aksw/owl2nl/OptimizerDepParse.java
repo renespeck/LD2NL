@@ -100,6 +100,7 @@ public class OptimizerDepParse {
             }
             boolean subjectsChecker = false;
             boolean verbsChecker = false;
+            boolean objectChecker=false;
             boolean aggregated = false;
             StringBuffer finalText = new StringBuffer();
             List<IndexedWord> finalTextList = new ArrayList<>();
