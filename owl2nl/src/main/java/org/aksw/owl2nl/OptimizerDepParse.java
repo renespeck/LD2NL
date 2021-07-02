@@ -252,5 +252,30 @@ public class OptimizerDepParse {
         }
         return aggregatedList;
     }
+
+    //object aggregation: different subject+same verbs+same object
+    public static List<IndexedWord> aggregateByObjects(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex) {
+        List<IndexedWord> aggregatedList=new ArrayList();
+        // removing verbs and object from the while list
+        for(int i=0;i<verbIndex.size();i++){
+            if(i==0){
+                for(int j=0;j<verbIndex.get(i);j++){
+                    aggregatedList.add(nodeList.get(j));
+                }
+            }
+            else if(i==verbIndex.size()-1){
+                for (int j=combinedCcCommaIndex.get(i-1);j<nodeList.size();j++){
+                    aggregatedList.add(nodeList.get(j));
+                }
+            }
+            else{
+                for(int j=combinedCcCommaIndex.get(i-1); j<verbIndex.get(i); j++){
+                    aggregatedList.add(nodeList.get(j));
+                }
+            }
+        }
+
+        return aggregatedList;
+    }
 }
 
