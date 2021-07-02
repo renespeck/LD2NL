@@ -100,12 +100,14 @@ public class OptimizerDepParse {
             }
             boolean subjectsChecker = false;
             boolean verbsChecker = false;
+            boolean objectChecker=false;
             boolean aggregated = false;
             StringBuffer finalText = new StringBuffer();
             List<IndexedWord> finalTextList = new ArrayList<>();
             if (combinedCcCommaList.size() >= 1) {
                 subjectsChecker = checkAllSubjectsSame(nodeList, verbIndex, combinedCcCommaIndex);
                 verbsChecker = checkAllVerbsSame(verbList);
+                objectChecker=checkAllObjectsSame(objectList);
             }
             if (combinedCcCommaList.size() >= 1 && verbList.size() == combinedCcCommaList.size() + 1) {
 
@@ -114,6 +116,14 @@ public class OptimizerDepParse {
                     aggregated = true;
                     if (verbsChecker) {
                         finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
+                    }
+                }
+
+                else{
+                    //for different subject same verbs and same objects
+                    if(verbsChecker && objectChecker){
+                        finalTextList=aggregateByObjects(nodeList,verbIndex,combinedCcCommaIndex);
+                        aggregated=true;
                     }
                 }
             }
@@ -250,6 +260,31 @@ public class OptimizerDepParse {
             }
 
         }
+        return aggregatedList;
+    }
+
+    //object aggregation: different subject+same verbs+same object
+    public static List<IndexedWord> aggregateByObjects(List<IndexedWord> nodeList, List<Integer> verbIndex, List<Integer> combinedCcCommaIndex) {
+        List<IndexedWord> aggregatedList=new ArrayList();
+        // removing verbs and object from the while list
+        for(int i=0;i<verbIndex.size();i++){
+            if(i==0){
+                for(int j=0;j<verbIndex.get(i);j++){
+                    aggregatedList.add(nodeList.get(j));
+                }
+            }
+            else if(i==verbIndex.size()-1){
+                for (int j=combinedCcCommaIndex.get(i-1);j<nodeList.size();j++){
+                    aggregatedList.add(nodeList.get(j));
+                }
+            }
+            else{
+                for(int j=combinedCcCommaIndex.get(i-1); j<verbIndex.get(i); j++){
+                    aggregatedList.add(nodeList.get(j));
+                }
+            }
+        }
+
         return aggregatedList;
     }
 }
