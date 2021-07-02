@@ -118,6 +118,14 @@ public class OptimizerDepParse {
                         finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
                     }
                 }
+
+                else{
+                    //for different subject same verbs and same objects
+                    if(verbsChecker && objectChecker){
+                        finalTextList=aggregateByObjects(nodeList,verbIndex,combinedCcCommaIndex);
+                        aggregated=true;
+                    }
+                }
             }
             if (aggregated) {
                 for (int i = 0; i < finalTextList.size(); i++) {
