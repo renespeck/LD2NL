@@ -18,8 +18,8 @@ public class OptimizerDepParse {
         try {
             if (text == null || text == "") return text;
 
-            //text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings metal";
-
+            text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings metal";
+            //text="something that a man that sings rock";
             StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
             CoreDocument coreDocument = new CoreDocument(text);
             SemanticGraphFormatter sgf = new SemanticGraphFormatter(1, 1, false, false, false, false, false);
@@ -117,6 +117,16 @@ public class OptimizerDepParse {
                     if (verbsChecker) {
                         finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
                     }
+                    //exp
+                    for(int i=verbIndex.get(0)-1; i>=0; i--){
+
+                        if(i-1>=0 && finalTextList.get(i).tag().equals("NN")){
+
+                            for(int j=i-2;j>=0; j--){
+                                finalTextList.remove(j);
+                            }
+                        }
+                    }
                 }
 
                 else{
@@ -127,14 +137,21 @@ public class OptimizerDepParse {
                     }
                 }
             }
+            //exp
+            for (int i=0;i<finalTextList.size();i++){
+                if(finalTextList.get(i).tag().equals("WDT")){
+                    finalTextList.remove(i);
+                }
+            }
+
             if (aggregated) {
                 //removing WDT pos tag WDT stands for whdeterminer
 
-                for (int i=0;i<finalTextList.size();i++){
-                    if(finalTextList.get(i).tag().equals("WDT")){
-                        finalTextList.remove(i);
-                    }
-                }
+//                for (int i=0;i<finalTextList.size();i++){
+//                    if(finalTextList.get(i).tag().equals("WDT")){
+//                        finalTextList.remove(i);
+//                    }
+//                }
 
                 for (int i = 0; i < finalTextList.size(); i++) {
                     finalText.append(finalTextList.get(i).value());
