@@ -107,6 +107,7 @@ public class OptimizerDepParse {
             if (combinedCcCommaList.size() >= 1) {
                 subjectsChecker = checkAllSubjectsSame(nodeList, verbIndex, combinedCcCommaIndex);
                 verbsChecker = checkAllVerbsSame(verbList);
+                objectChecker=checkAllObjectsSame(objectList);
             }
             if (combinedCcCommaList.size() >= 1 && verbList.size() == combinedCcCommaList.size() + 1) {
 
