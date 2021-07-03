@@ -18,8 +18,8 @@ public class OptimizerDepParse {
         try {
             if (text == null || text == "") return text;
 
-            text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings metal";
-            //text="something that a man that sings rock";
+            //text="something that a man that sings rock and that a man that sings jazz or a man that sings karaoke  or a man that sings metal";
+
             StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
             CoreDocument coreDocument = new CoreDocument(text);
             SemanticGraphFormatter sgf = new SemanticGraphFormatter(1, 1, false, false, false, false, false);
@@ -153,24 +153,57 @@ public class OptimizerDepParse {
 //                    }
 //                }
 
-                for (int i = 0; i < finalTextList.size(); i++) {
-                    finalText.append(finalTextList.get(i).value());
-                    if (i == finalTextList.size() - 1) {
-                        continue;
-                    } else {
-                        String next = finalTextList.get(i + 1).value();
-                        if (!next.equals(","))
-                            finalText.append(" ");
-                    }
-                }
+//                for (int i = 0; i < finalTextList.size(); i++) {
+//                    finalText.append(finalTextList.get(i).value());
+//                    if (i == finalTextList.size() - 1) {
+//                        continue;
+//                    } else {
+//                        String next = finalTextList.get(i + 1).value();
+//                        if (!next.equals(","))
+//                            finalText.append(" ");
+//                    }
+//                }
+                finalText.append(convertListToString(finalTextList));
+
+
             } else {
-                finalText.append(text);
+                if(verbIndex.size()==1){
+                    for(int i=verbIndex.get(0)-1; i>=0; i--){
+
+                        if(i-1>=0 && nodeList.get(i).tag().equals("NN")){
+
+                            for(int j=i-2;j>=0; j--){
+                                nodeList.remove(j);
+                            }
+                        }
+                    }
+                    finalText.append(convertListToString(nodeList));
+                }
+                else {
+                    finalText.append(text);
+                }
             }
             System.out.println("Text after using Dependency Parsing : " + finalText);
             return finalText.toString();
         } catch (Exception e) {
             return text;
         }
+    }
+
+    //convert list of nodes to tesx
+    public static String convertListToString(List<IndexedWord> finalTextList){
+        StringBuffer finalText= new StringBuffer();
+        for (int i = 0; i < finalTextList.size(); i++) {
+            finalText.append(finalTextList.get(i).value());
+            if (i == finalTextList.size() - 1) {
+                continue;
+            } else {
+                String next = finalTextList.get(i + 1).value();
+                if (!next.equals(","))
+                    finalText.append(" ");
+            }
+        }
+        return finalText.toString();
     }
 
     //Method to check whether all verbs in the sentence are same or not
