@@ -137,43 +137,10 @@ public class OptimizerDepParse {
                     }
                 }
             }
-            //exp
-            for (int i=0;i<finalTextList.size();i++){
-                if(finalTextList.get(i).tag().equals("WDT")){
-                    finalTextList.remove(i);
-                }
-
-                else{
-                    //for different subject same verbs and same objects
-                    if(verbsChecker && objectChecker){
-                        finalTextList=aggregateByObjects(nodeList,verbIndex,combinedCcCommaIndex);
-                        aggregated=true;
-                    }
-                }
-            }
 
             if (aggregated) {
-                //removing WDT pos tag WDT stands for whdeterminer
 
-//                for (int i=0;i<finalTextList.size();i++){
-//                    if(finalTextList.get(i).tag().equals("WDT")){
-//                        finalTextList.remove(i);
-//                    }
-//                }
-
-//                for (int i = 0; i < finalTextList.size(); i++) {
-//                    finalText.append(finalTextList.get(i).value());
-//                    if (i == finalTextList.size() - 1) {
-//                        continue;
-//                    } else {
-//                        String next = finalTextList.get(i + 1).value();
-//                        if (!next.equals(","))
-//                            finalText.append(" ");
-//                    }
-//                }
                 finalText.append(convertListToString(finalTextList));
-
-
             } else {
                 if(verbIndex.size()==1){
                     for(int i=verbIndex.get(0)-1; i>=0; i--){

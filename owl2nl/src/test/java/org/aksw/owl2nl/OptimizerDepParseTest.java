@@ -90,7 +90,7 @@ public class OptimizerDepParseTest {
                 df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man));
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊔ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
-        Assert.assertEquals("a man sings jazz or karaoke", text);
+        Assert.assertEquals("a man that sings jazz or karaoke", text);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class OptimizerDepParseTest {
                 df.getOWLObjectHasValue(sings, jazz), man);
         text = converter.convert(ce);
         Assert.assertEquals("Man ⊓ (∃ sing.{jazz}) ⊓ (∃ sing.{karaoke})", ce.toString());
-        Assert.assertEquals("a man sings jazz and karaoke", text);
+        Assert.assertEquals("a man that sings jazz and karaoke", text);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class OptimizerDepParseTest {
                 df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man));
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊓ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
-        Assert.assertEquals("a man sings jazz and karaoke", text);
+        Assert.assertEquals("a man that sings jazz and karaoke", text);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class OptimizerDepParseTest {
                 df.getOWLObjectHasValue(sings, rock), man);
         text = converter.convert(ce);
         Assert.assertEquals("Man ⊓ (∃ sing.{jazz}) ⊓ (∃ sing.{karaoke}) ⊓ (∃ sing.{rock})", ce.toString());
-        Assert.assertEquals("a man sings jazz, karaoke and rock", text);
+        Assert.assertEquals("a man that sings jazz, karaoke and rock", text);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊓ (Man ⊓ (∃ sing.{karaoke}))" +
                 " ⊓ (Man ⊓ (∃ sing.{rock}))", ce.toString());
-        Assert.assertEquals("a man sings jazz, karaoke and rock", text);
+        Assert.assertEquals("a man that sings jazz, karaoke and rock", text);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊔ (Man ⊓ (∃ sing.{karaoke}))" +
                 " ⊔ (Man ⊓ (∃ sing.{rock}))", ce.toString());
-        Assert.assertEquals("a man sings jazz, karaoke or rock", text);
+        Assert.assertEquals("a man that sings jazz, karaoke or rock", text);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{karaoke})) ⊔ ((Man ⊓ (∃ sing.{jazz}))" +
                 " ⊔ (Man ⊓ (∃ sing.{rock})))", ce.toString());
-        Assert.assertEquals("a man sings karaoke or jazz or rock", text);
+        Assert.assertEquals("a man that sings karaoke or jazz or rock", text);
     }
 
     @Test
@@ -162,7 +162,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz}) ⊓ (∃ sing.{rock}))" +
                 " ⊔ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
-        Assert.assertEquals("a man sings jazz and rock or karaoke", text);
+        Assert.assertEquals("a man that sings jazz and rock or karaoke", text);
     }
 
     @Test
@@ -174,7 +174,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{rock})) ⊓ ((Man ⊓ (∃ sing.{jazz}))" +
                 " ⊔ (Man ⊓ (∃ sing.{karaoke})))", ce.toString());
-        Assert.assertEquals("a man sings rock and jazz or karaoke", text);
+        Assert.assertEquals("a man that sings rock and jazz or karaoke", text);
     }
     @Test
     public void testConjunctionMultipleSSDVDO() {
@@ -184,7 +184,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("Man ⊓ (∃ play.{cricket}) ⊓ (∃ sing.{jazz})" +
                 " ⊓ (∃ sing.{rock})", ce.toString());
-        Assert.assertEquals("a man plays cricket, sings jazz and sings rock", text);
+        Assert.assertEquals("a man that plays cricket, sings jazz and sings rock", text);
     }
 
     @Test
@@ -196,7 +196,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ play.{cricket})) ⊔ ((Man ⊓ (∃ sing.{jazz}))" +
                 " ⊓ (Man ⊓ (∃ sing.{karaoke})))", ce.toString());
-        Assert.assertEquals("a man plays cricket or sings jazz and sings karaoke", text);
+        Assert.assertEquals("a man that plays cricket or sings jazz and sings karaoke", text);
 
     }
 }
