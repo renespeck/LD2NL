@@ -1,5 +1,6 @@
 package org.aksw.owl2nl;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
@@ -18,7 +19,7 @@ public class OptimizerDepParseTest {
 
     private static OWLNamedIndividual paderborn;
     private static OWLNamedIndividual karaoke;
-    private static OWLNamedIndividual Jazz;
+    private static OWLNamedIndividual jazz;
     private static OWLNamedIndividual Cricket;
     private static OWLNamedIndividual football;
     private static OWLNamedIndividual hockey;
@@ -38,7 +39,7 @@ public class OptimizerDepParseTest {
     private static OWLDataProperty nrOfInhabitants;
     private static OWLDataRange dataRange;
 
-    OWLClassExpression ce;
+    OWLClassExpression ce, ce1;
 
     String text;
     /**
@@ -51,23 +52,23 @@ public class OptimizerDepParseTest {
         df = new OWLDataFactoryImpl();
         PrefixManager pm = new DefaultPrefixManager("http://dbpedia.org/ontology/");
 
-        worksFor = df.getOWLObjectProperty("worksFor", pm);
-        ledBy = df.getOWLObjectProperty("isLedBy", pm);
+//        worksFor = df.getOWLObjectProperty("worksFor", pm);
+//        ledBy = df.getOWLObjectProperty("isLedBy", pm);
         sings = df.getOWLObjectProperty("sing", pm);
         plays = df.getOWLObjectProperty("play", pm);
-        company = df.getOWLClass("Company", pm);
+//        company = df.getOWLClass("Company", pm);
         man = df.getOWLClass("Man", pm);
-        softwareCompany = df.getOWLClass("SoftwareCompany", pm);
-        salary = df.getOWLLiteral(40000);
-        amountOfSalary = df.getOWLDataProperty("amountOfSalary", pm);
-        birthPlace = df.getOWLObjectProperty("birthPlace", pm);
-        worksFor = df.getOWLObjectProperty("worksFor", pm);
-        ledBy = df.getOWLObjectProperty("isLedBy", pm);
+//        softwareCompany = df.getOWLClass("SoftwareCompany", pm);
+//        salary = df.getOWLLiteral(40000);
+//        amountOfSalary = df.getOWLDataProperty("amountOfSalary", pm);
+//        birthPlace = df.getOWLObjectProperty("birthPlace", pm);
+//        worksFor = df.getOWLObjectProperty("worksFor", pm);
+//        ledBy = df.getOWLObjectProperty("isLedBy", pm);
 
-        workPlace = df.getOWLObjectProperty("workPlace", pm);
-        paderborn = df.getOWLNamedIndividual("Paderborn", pm);
+//        workPlace = df.getOWLObjectProperty("workPlace", pm);
+//        paderborn = df.getOWLNamedIndividual("Paderborn", pm);
         karaoke = df.getOWLNamedIndividual("karaoke", pm);
-        Jazz = df.getOWLNamedIndividual("jazz", pm);
+        jazz = df.getOWLNamedIndividual("jazz", pm);
         football = df.getOWLNamedIndividual("football", pm);
         Cricket = df.getOWLNamedIndividual("cricket", pm);
         hockey = df.getOWLNamedIndividual("hockey", pm);
@@ -77,20 +78,102 @@ public class OptimizerDepParseTest {
         rock=df.getOWLNamedIndividual("rock", pm);
 
 
-        nrOfInhabitants = df.getOWLDataProperty("nrOfInhabitants", pm);
-        dataRange = df.getOWLDatatypeMinInclusiveRestriction(10000000);
+//        nrOfInhabitants = df.getOWLDataProperty("nrOfInhabitants", pm);
+//        dataRange = df.getOWLDatatypeMinInclusiveRestriction(10000000);
 
         ToStringRenderer.getInstance().setRenderer(new DLSyntaxObjectRenderer());
     }
 
     @Test
-    public void testSubjectAndVerbAggregation() {
-
-        // a person that sings karaoke or a person that sings  jazz
-
+    public void testDisjunctionSSSVDO() {
         ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
-                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, Jazz), man));
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man));
         text = converter.convert(ce);
-        System.out.println(ce + "=" + text);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊔ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
+        Assert.assertEquals("a man that sings jazz or karaoke", text);
+    }
+
+    @Test
+    public void testConjunctionSSSVDO() {
+        ce = df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke),
+                df.getOWLObjectHasValue(sings, jazz), man);
+        text = converter.convert(ce);
+        Assert.assertEquals("Man ⊓ (∃ sing.{jazz}) ⊓ (∃ sing.{karaoke})", ce.toString());
+        Assert.assertEquals("a man that sings jazz and karaoke", text);
+    }
+
+    @Test
+    public void testConjunctionSSSVDO2() {
+        ce = df.getOWLObjectIntersectionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man));
+        text = converter.convert(ce);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊓ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
+        Assert.assertEquals("something that a man that sings jazz and karaoke", text);
+    }
+
+    @Test
+    public void testConjunctionMultipleSSSVDO() {
+        ce = df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke),
+                df.getOWLObjectHasValue(sings, jazz),
+                df.getOWLObjectHasValue(sings, rock), man);
+        text = converter.convert(ce);
+        Assert.assertEquals("Man ⊓ (∃ sing.{jazz}) ⊓ (∃ sing.{karaoke}) ⊓ (∃ sing.{rock})", ce.toString());
+        Assert.assertEquals("a man that sings jazz, karaoke and rock", text);
+    }
+
+    @Test
+    public void testConjunctionMultipleSSSVDO2() {
+        ce = df.getOWLObjectIntersectionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, rock), man));
+        text = converter.convert(ce);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊓ (Man ⊓ (∃ sing.{karaoke}))" +
+                " ⊓ (Man ⊓ (∃ sing.{rock}))", ce.toString());
+        Assert.assertEquals("something that a man that sings jazz, karaoke and rock", text);
+    }
+
+    @Test
+    public void testDisjunctionMultipleSSSVDO() {
+        ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, rock), man));
+        text = converter.convert(ce);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊔ (Man ⊓ (∃ sing.{karaoke}))" +
+                " ⊔ (Man ⊓ (∃ sing.{rock}))", ce.toString());
+        Assert.assertEquals("a man that sings jazz, karaoke or rock", text);
+    }
+
+    @Test
+    public void testDisjunctionMultipleSSSVDO2() {
+        ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
+                df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man),
+                        df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, rock), man)));
+        text = converter.convert(ce);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{karaoke})) ⊔ ((Man ⊓ (∃ sing.{jazz}))" +
+                " ⊔ (Man ⊓ (∃ sing.{rock})))", ce.toString());
+        Assert.assertEquals("a man that sings karaoke or jazz or rock", text);
+    }
+
+    @Test
+    public void testCombinationMultipleSSSVDO() {
+        ce = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke), man),
+                df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz),
+                        df.getOWLObjectHasValue(sings, rock), man));
+        text = converter.convert(ce);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{jazz}) ⊓ (∃ sing.{rock}))" +
+                " ⊔ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
+        Assert.assertEquals("a man that sings jazz and rock or karaoke", text);
+    }
+
+    @Test
+    public void testCombinationMultipleSSSVDO2() {
+        ce1 = df.getOWLObjectUnionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, karaoke),
+                man), df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man));
+        ce = df.getOWLObjectIntersectionOf(df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, rock),
+                man), ce1);
+        text = converter.convert(ce);
+        Assert.assertEquals("(Man ⊓ (∃ sing.{rock})) ⊓ ((Man ⊓ (∃ sing.{jazz}))" +
+                " ⊔ (Man ⊓ (∃ sing.{karaoke})))", ce.toString());
+        Assert.assertEquals("something that a man that sings rock and jazz or karaoke", text);
     }
 }
