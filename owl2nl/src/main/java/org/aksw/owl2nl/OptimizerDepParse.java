@@ -56,25 +56,23 @@ public class OptimizerDepParse {
             //object list
             int objectcounter=0;
             for (int i = 0; i < nodeList.size(); i++) {
-                String object="";
+                StringBuilder object = new StringBuilder();
                 if ((nodeList.get(i).tag()).equals("VBZ")) {
                     objectcounter = i+1;
                     for(int j=i+1; j<nodeList.size(); j++){
-                        if ((nodeList.get(j).tag()).equals("CC") || (nodeList.get(j).tag()).equals(".")){
+                        if ((nodeList.get(j).tag()).equals("CC") || (nodeList.get(j).tag()).equals(".")) {
                             i++;
                             break;
-                        }
-                        else{
-                            object=object+nodeList.get(j)+" ";
+                        } else {
+                            object.append(nodeList.get(j)).append(" ");
                             i++;
                         }
-                    };
+                    }
                 }
-                if(object=="" || object=="."){
+                if (object.toString().equals("") || object.toString().equals(".")) {
 
-                }
-                else{
-                    objectList.add(new IndexedWord(CoreLabel.wordFromString(object)));
+                } else {
+                    objectList.add(new IndexedWord(CoreLabel.wordFromString(object.toString())));
                     objectIndex.add(objectcounter);
                 }
             }
@@ -118,15 +116,7 @@ public class OptimizerDepParse {
                         finalTextList = aggregateByVerbs(nodeList, verbIndex, combinedCcCommaIndex);
                     }
                     //exp
-                    for(int i=verbIndex.get(0)-1; i>=0; i--){
-
-                        if(i-1>=0 && finalTextList.get(i).tag().equals("NN")){
-
-                            for(int j=i-2;j>=0; j--){
-                                finalTextList.remove(j);
-                            }
-                        }
-                    }
+                    MergeSameNoun(verbIndex, finalTextList);
                 }
 
                 else{
@@ -139,35 +129,38 @@ public class OptimizerDepParse {
             }
 
             if (aggregated) {
-
                 finalText.append(convertListToString(finalTextList));
             } else {
-                if(verbIndex.size()==1){
-                    for(int i=verbIndex.get(0)-1; i>=0; i--){
-
-                        if(i-1>=0 && nodeList.get(i).tag().equals("NN")){
-
-                            for(int j=i-2;j>=0; j--){
-                                nodeList.remove(j);
-                            }
-                        }
-                    }
-                    finalText.append(convertListToString(nodeList));
-                }
-                else {
-                    finalText.append(text);
-                }
+//                if(verbIndex.size()==1){
+//                    MergeSameNoun(verbIndex, nodeList);
+//                    finalText.append(convertListToString(nodeList));
+//                }
+                //else {
+                finalText.append(text);
+                // }
             }
-            System.out.println("Text after using Dependency Parsing : " + finalText);
+            System.out.println("Text after using Dependency Parsing : " + finalText.toString());
             return finalText.toString();
         } catch (Exception e) {
             return text;
         }
     }
 
+    private void MergeSameNoun(List<Integer> verbIndex, List<IndexedWord> finalTextList) {
+        for (int i = verbIndex.get(0) - 1; i >= 0; i--) {
+
+            if (i - 1 >= 0 && finalTextList.get(i).tag().equals("NN")) {
+
+                for (int j = i - 2; j >= 0; j--) {
+                    finalTextList.remove(j);
+                }
+            }
+        }
+    }
+
     //convert list of nodes to tesx
-    public static String convertListToString(List<IndexedWord> finalTextList){
-        StringBuffer finalText= new StringBuffer();
+    public static String convertListToString(List<IndexedWord> finalTextList) {
+        StringBuffer finalText = new StringBuffer();
         for (int i = 0; i < finalTextList.size(); i++) {
             finalText.append(finalTextList.get(i).value());
             if (i == finalTextList.size() - 1) {

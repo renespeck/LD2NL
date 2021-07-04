@@ -17,7 +17,6 @@ public class OptimizerDepParseTest {
     private static OWLClass man;
     private static OWLClass softwareCompany;
 
-    private static OWLNamedIndividual paderborn;
     private static OWLNamedIndividual karaoke;
     private static OWLNamedIndividual jazz;
     private static OWLNamedIndividual cricket;
