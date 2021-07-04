@@ -17,7 +17,6 @@ public class OptimizerDepParseTest {
     private static OWLClass man;
     private static OWLClass softwareCompany;
 
-    private static OWLNamedIndividual paderborn;
     private static OWLNamedIndividual karaoke;
     private static OWLNamedIndividual jazz;
     private static OWLNamedIndividual cricket;
@@ -108,7 +107,7 @@ public class OptimizerDepParseTest {
                 df.getOWLObjectIntersectionOf(df.getOWLObjectHasValue(sings, jazz), man));
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊓ (Man ⊓ (∃ sing.{karaoke}))", ce.toString());
-        Assert.assertEquals("something that a man that sings jazz and karaoke", text);
+        Assert.assertEquals("a man that sings jazz and karaoke", text);
     }
 
     @Test
@@ -129,7 +128,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{jazz})) ⊓ (Man ⊓ (∃ sing.{karaoke}))" +
                 " ⊓ (Man ⊓ (∃ sing.{rock}))", ce.toString());
-        Assert.assertEquals("something that a man that sings jazz, karaoke and rock", text);
+        Assert.assertEquals("a man that sings jazz, karaoke and rock", text);
     }
 
     @Test
@@ -174,7 +173,7 @@ public class OptimizerDepParseTest {
         text = converter.convert(ce);
         Assert.assertEquals("(Man ⊓ (∃ sing.{rock})) ⊓ ((Man ⊓ (∃ sing.{jazz}))" +
                 " ⊔ (Man ⊓ (∃ sing.{karaoke})))", ce.toString());
-        Assert.assertEquals("something that a man that sings rock and jazz or karaoke", text);
+        Assert.assertEquals("a man that sings rock and jazz or karaoke", text);
     }
     @Test
     public void testConjunctionMultipleSSDVDO() {
