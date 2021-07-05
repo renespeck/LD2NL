@@ -256,7 +256,7 @@ public class OWLClassExpressionConverterTest_Extended {
 		text = converter.convert(ce);
 		System.out.println(ce + " = " + text);
 		Assert.assertEquals("Person ⊓ ((∃ sing.{jazz}) ⊓ (∃ sing.{karaoke}))", ce.toString());
-		Assert.assertEquals("a person that something that sings jazz and karaoke", text);
+		Assert.assertEquals("that something that sings jazz and karaoke", text);
 	}
 
 	@Test
@@ -268,7 +268,7 @@ public class OWLClassExpressionConverterTest_Extended {
 		System.out.println(ce2 + " = " + text);
 		Assert.assertEquals("(Person ⊓ (∃ sing.{jazz})) ⊓ (Person ⊓ (∃ sing.{karaoke}))",
 				ce2.toString());
-		Assert.assertEquals("something that a person that sings jazz and karaoke", text);
+		Assert.assertEquals("a person that sings jazz and karaoke", text);
 	}
 
 	@Test
@@ -310,7 +310,7 @@ public class OWLClassExpressionConverterTest_Extended {
 		System.out.println(ce + " = " + text);
 		Assert.assertEquals("(Person ⊓ (∃ sing.{hiphop})) ⊓ (Person ⊓ (∃ sing.{jazz}))" +
 				" ⊓ (Person ⊓ (∃ sing.{karaoke})) ⊓ (Person ⊓ (∃ sing.{rock}))", ce.toString());
-		Assert.assertEquals("something that a person that sings hiphop, jazz, karaoke and rock", text);
+		Assert.assertEquals("a person that sings hiphop, jazz, karaoke and rock", text);
 	}
 
 	@Test
@@ -323,7 +323,7 @@ public class OWLClassExpressionConverterTest_Extended {
 		System.out.println(ce + " = " + text);
 		Assert.assertEquals("(Person ⊓ (∃ sing.{rock})) ⊓ ((Person ⊓ (∃ sing.{jazz}))" +
 				" ⊔ (Person ⊓ (∃ sing.{karaoke})))", ce.toString());
-		Assert.assertEquals("something that a person that sings rock and jazz or karaoke", text);
+		Assert.assertEquals("a person that sings rock and jazz or karaoke", text);
 	}
 
 	@Test
