@@ -29,6 +29,7 @@ public class OptimizerDepParse {
             SemanticGraph dependencyParse = sentence.dependencyParse();
 
 
+
             // Storing nodes of the parse tree in a list
             List<IndexedWord> nodeList = dependencyParse.vertexListSorted();
 
@@ -107,6 +108,7 @@ public class OptimizerDepParse {
                 verbsChecker = checkAllVerbsSame(verbList);
                 objectChecker=checkAllObjectsSame(objectList);
             }
+
             if (combinedCcCommaList.size() >= 1 && verbList.size() == combinedCcCommaList.size() + 1) {
 
                 if (subjectsChecker) {
@@ -131,13 +133,9 @@ public class OptimizerDepParse {
             if (aggregated) {
                 finalText.append(convertListToString(finalTextList));
             } else {
-//                if(verbIndex.size()==1){
-//                    MergeSameNoun(verbIndex, nodeList);
-//                    finalText.append(convertListToString(nodeList));
-//                }
-                //else {
+
                 finalText.append(text);
-                // }
+
             }
             System.out.println("Text after using Dependency Parsing : " + finalText.toString());
             return finalText.toString();
@@ -158,7 +156,7 @@ public class OptimizerDepParse {
         }
     }
 
-    //convert list of nodes to tesx
+    //convert list of nodes to text
     public static String convertListToString(List<IndexedWord> finalTextList) {
         StringBuffer finalText = new StringBuffer();
         for (int i = 0; i < finalTextList.size(); i++) {
@@ -216,11 +214,11 @@ public class OptimizerDepParse {
         }
         for (int i = 0; i < subjects.size() - 1; i++) {
 
-            if (subjects.get(i).length() >= subjects.get(i + 1).length()) {
-                if (!(subjects.get(i).contains(subjects.get(i + 1)))) {
+            if (subjects.get(0).length() >= subjects.get(i + 1).length()) {
+                if (!(subjects.get(0).contains(subjects.get(i + 1)))) {
                     return false;
                 }
-            } else if (!(subjects.get(i + 1).contains(subjects.get(i)))) {
+            } else if (!(subjects.get(i + 1).contains(subjects.get(0)))) {
                 return false;
             }
         }
